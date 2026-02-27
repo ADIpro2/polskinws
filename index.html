@@ -1,25 +1,90 @@
-<html>
+<!DOCTYPE html>
+<html lang="pl">
 <head>
-    <title>Disclaimer Update</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polish Weather Warning System</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 5px; }
+        .legend { position: fixed; bottom: 10px; right: 10px; background: white; padding: 10px; border-radius: 5px; }
+        /* Add styles for responsiveness and modern UI */
+    </style>
+</head>
+<body>
+    <div class="modal" id="disclaimerModal">
+        <div class="modal-content">
+            <p>Disclaimer: This is a weather warning system.</p>
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <div id="adminPanel" style="display: none;">
+        <h2>Admin Panel</h2>
+        <input type="password" id="adminPassword" placeholder="Enter admin password" />
+        <button onclick="checkLogin()">Login</button>
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">Warning Type</div>
+                <div class="swiper-slide">Category</div>
+                <div class="swiper-slide">Severity Level</div>
+                <div class="swiper-slide">Possibilities</div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+
+    <div id="map" style="height: 400px;"></div>
+
+    <div class="legend" id="legend">
+        <h4>Severity Levels</h4>
+        <p>1 - Low</p>
+        <p>2 - Moderate</p>
+        <p>3 - High</p>
+        <p>4 - Extreme</p>
+    </div>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
     <script>
+        // Firebase configuration
+        const firebaseConfig = { /* Your Firebase config here */ };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Leaflet map setup
+        const map = L.map('map').setView([51.505, -0.09], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, }).addTo(map);
+        // Add RainViewer overlay code here
+
         function start() {
-            // ensure this function works properly
-            console.log('Start function executed');
-            // Your code logic
+            document.getElementById('disclaimerModal').style.display = 'flex';
         }
 
         function closeModal() {
-            var modal = document.getElementById('disclaimerModal');
-            modal.style.display = 'none';
-            console.log('Modal closed');
+            document.getElementById('disclaimerModal').style.display = 'none';
         }
+
+        function checkLogin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === "505692GH") {
+                document.getElementById('adminPanel').style.display = 'block';
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+
+        // Drawing function for trapezoids, geolocation, notification, delete warning functions will be implemented here
+
+        // Expose functions to window object
+        window.start = start;
+        window.closeModal = closeModal;
+        window.checkLogin = checkLogin;
     </script>
-</head>
-<body>
-    <button id="disclaimerButton" onclick="start();">Show Disclaimer</button>
-    <div id="disclaimerModal" style="display:none;">
-        <p>This is the disclaimer content.</p>
-        <button onclick="closeModal();">Close</button>
-    </div>
 </body>
 </html>
