@@ -3,28 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
+    <title>Weather Warning System</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="login-container">
-        <h1>Admin Login</h1>
-        <form action="/login" method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
-        <div id="warning" class="warning">Invalid credentials. Please try again.</div>
+    <h1>Weather Warning System</h1>
+    <div id="admin-login">
+        <h2>Admin Login</h2>
+        <input type="password" id="admin-password" placeholder="Enter password">
+        <button onclick="adminLogin()">Login</button>
     </div>
-    <div class="categories-swipers">
-        <!-- Swipper integration for categories goes here -->
+    <div id="disclaimer">
+        <p>Disclaimer: This system is intended for emergency use only. Please seek professional advice in all situations.</p>
     </div>
-    <div class="polish-map">
-        <!-- Polish map goes here -->
+    <div id="weather-warning-system">
+        <h2>Weather Warning Types</h2>
+        <div id="swippers">
+            <button onclick="setWarningType('STRONG STORM')">STRONG STORM</button>
+            <button onclick="setWarningType('VIOLENT STORM')">VIOLENT STORM</button>
+            <button onclick="setWarningType('TORNADO')">TORNADO</button>
+            <button onclick="setWarningType('STRONG TORNADO')">STRONG TORNADO</button>
+        </div>
+        <h3>Severity Levels</h3>
+        <div id="severity-levels">
+            <button onclick="setSeverityLevel('POTENTIALLY')">POTENTIALLY</button>
+            <button onclick="setSeverityLevel('CONFIRMED')">CONFIRMED</button>
+            <button onclick="setSeverityLevel('PARTICULARLY DANGEROUS')">PARTICULARLY DANGEROUS</button>
+        </div>
     </div>
-    <div class="radar-integration">
-        <!-- Radar functionalities add-on goes here -->
+    <div id="possibilities-section">
+        <h2>Possible Warnings</h2>
+        <ul>
+            <li>POSSIBLE STRONG STORMS</li>
+            <li>POSSIBLE VIOLENT STORMS</li>
+            <li>POSSIBLE TORNADOS</li>
+            <li>POSSIBLE STRONG TORNADOS</li>
+        </ul>
     </div>
-    <script src="script.js"></script>
+    <div id="map-container">
+        <h2>Radar Overlay</h2>
+        <div id="polish-map">
+            <!-- Your map implementation goes here -->
+        </div>
+    </div>
+    <div id="geolocation-notifications">
+        <h2>Geolocation Notifications</h2>
+        <button onclick="enableGeolocation()">Enable Geolocation</button>
+    </div>
+    <script>
+        const firebaseConfig = {
+            apiKey: 'YOUR_API_KEY',
+            authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
+            projectId: 'YOUR_PROJECT_ID',
+            storageBucket: 'YOUR_PROJECT_ID.appspot.com',
+            messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+            appId: 'YOUR_APP_ID'
+        };
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function adminLogin() {
+            const password = document.getElementById('admin-password').value;
+            if (password === '505692GH') {
+                alert('Login successful!');
+                // Proceed to the admin panel
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+
+        function enableGeolocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    // Handle geolocation
+                });
+            }
+        }
+    </script>
 </body>
 </html>
