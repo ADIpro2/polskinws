@@ -1,53 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Polish Weather Warning System</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Add responsive styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swiper/8.0.7/swiper-bundle.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #disclaimer { display: none; }
+        .severity {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .low { background-color: #b2ffcc; }
+        .medium { background-color: #ffeb3b; }
+        .high { background-color: #ff5722; }
+    </style>
 </head>
 <body>
-    <!-- Disclaimer Modal -->
-    <div id="disclaimerModal">
-        <p>This is the disclaimer. Please read carefully.</p>
-        <button id="closeModal">Close</button>
+    <div id="disclaimer">
+        <p>Disclaimer: This is a simulated warning system. Always check official sources!</p>
+        <button onclick="hideDisclaimer()">Close</button>
     </div>
+    <div id="map" style="height: 500px;"></div>
 
-    <!-- Admin Login -->
-    <div id="adminLogin">
-        <input type="password" id="password" placeholder="Enter admin password">
-        <button id="loginButton">Login</button>
-    </div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/swiper/8.0.7/swiper-bundle.min.js"></script>
 
-    <!-- Swiper UI -->
-    <div class="swiper-container">
-        <!-- Implement swiper UI here -->
-    </div>
-
-    <!-- Leaflet Map -->
-    <div id="map"></div>
-
-    <!-- Firebase Integration -->
-    <script src="https://www.gstatic.com/firebasejs/YOUR-FIREBASE-VERSION/firebase-app.js"></script>
     <script>
-        // Firebase initialization and real-time warning fetching
-    </script>
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-    <!-- Drawing Functionality -->
-    <script>
-        // Functionality for drawing trapezoids
-    </script>
+        function showDisclaimer() {
+            document.getElementById('disclaimer').style.display = 'block';
+        }
+        function hideDisclaimer() {
+            document.getElementById('disclaimer').style.display = 'none';
+        }
+        window.onload = function() { showDisclaimer(); };
 
-    <!-- Geolocation and Notifications -->
-    <script>
-        // Get user location and send notifications
-    </script>
+        let map = L.map('map').setView([52.4064, 16.9254], 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+        let currentWarnings = [];
 
-    <!-- Delete Warning Function -->
-    <script>
-        // Functionality to delete warning by ID
-    </script>
+        function trackUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(position => {
+                    console.log(`User position: ${position.coords.latitude}, ${position.coords.longitude}`);
+                });
+            }
+        }
 
-    <script src="script.js"></script>
+        trackUserLocation();
+
+        // Function to add a warning
+        function addWarning(data) {
+            const severityDiv = document.createElement('div');
+            severityDiv.className = `severity ${data.severity}`;
+            severityDiv.innerText = `Warning Type: ${data.type} - Severity: ${data.severity}`;
+            document.body.appendChild(severityDiv);
+        }
+
+        function deleteWarning(id) {
+            db.collection('warnings').doc(id).delete().then(() => {
+                console.log(`Warning with ID: ${id} deleted!`);
+            });
+        }
+    </script>
 </body>
 </html>
